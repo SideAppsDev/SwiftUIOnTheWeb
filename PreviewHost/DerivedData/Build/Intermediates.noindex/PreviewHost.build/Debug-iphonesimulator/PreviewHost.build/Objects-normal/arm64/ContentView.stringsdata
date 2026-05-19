@@ -1,0 +1,24 @@
+{
+  "source": "/Users/azamsharp/Desktop/SwiftOnBrowser/PreviewHost/PreviewHost/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Hello SwiftUI",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 7
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tap Me",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 12
+        }
+      }
+    ]
+  },
+  "version": 1
+}

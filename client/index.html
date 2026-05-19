@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwiftUI Preview</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    header {
+      padding: 18px 24px;
+      border-bottom: 1px solid #1e293b;
+      background: #020617;
+    }
+
+    h1 { margin: 0; font-size: 22px; }
+    header span { color: #94a3b8; font-size: 14px; }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr 430px;
+      gap: 20px;
+      padding: 20px;
+      height: calc(100vh - 72px);
+    }
+
+    .panel {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      height: 54px;
+      padding: 0 18px;
+      border-bottom: 1px solid #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #020617;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    #editor {
+      height: calc(100vh - 180px);
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: #2563eb;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .preview-wrap {
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      height: calc(100vh - 180px);
+      background: radial-gradient(circle at top, #1e293b, #020617);
+    }
+
+    .phone {
+      width: 390px;
+      min-height: 760px;
+      background: #000;
+      border-radius: 44px;
+      padding: 12px;
+      border: 1px solid #334155;
+    }
+
+    .screen {
+      width: 100%;
+      border-radius: 34px;
+      overflow: hidden;
+      background: white;
+      min-height: 730px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #preview {
+      width: 100%;
+      height: auto;
+      display: none;
+    }
+
+    .placeholder {
+      color: #64748b;
+      text-align: center;
+      padding: 24px;
+      font-size: 14px;
+    }
+
+    #error {
+      margin: 0;
+      padding: 14px 18px;
+      color: #fecaca;
+      background: #450a0a;
+      border-top: 1px solid #7f1d1d;
+      white-space: pre-wrap;
+      max-height: 180px;
+      overflow: auto;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>SwiftUI Preview</h1>
+    <span>Write SwiftUI code and render it using the iOS Simulator</span>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="panel-header">
+        <h2>ContentView.swift</h2>
+        <button id="runButton">Run Preview</button>
+      </div>
+
+      <div id="editor"></div>
+      <pre id="error"></pre>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Preview</h2>
+      </div>
+
+      <div class="preview-wrap">
+        <div class="phone">
+          <div class="screen">
+            <div class="placeholder" id="placeholder">
+              Click “Run Preview” to generate a SwiftUI screenshot.
+            </div>
+            <img id="preview" />
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let editor;
+
+
+    const runButton = document.getElementById("runButton");
+    const previewImage = document.getElementById("preview");
+    const errorBox = document.getElementById("error");
+    const placeholder = document.getElementById("placeholder");
+
+    require.config({
+      paths: {
+        vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs"
+      }
+    });
+
+    require(["vs/editor/editor.main"], function () {
+      monaco.languages.register({ id: "swift" });
+
+      monaco.languages.setMonarchTokensProvider("swift", {
+        tokenizer: {
+          root: [
+            [/\b(import|struct|class|var|let|func|return|if|else|for|while|private|public|internal|some|View|body)\b/, "keyword"],
+            [/\b(VStack|HStack|ZStack|Text|Button|Image|Spacer|List|NavigationStack|ScrollView)\b/, "type"],
+            [/\.(font|padding|background|foregroundStyle|cornerRadius|frame|largeTitle|title|headline|body)\b/, "attribute"],
+            [/".*?"/, "string"],
+            [/[0-9]+/, "number"],
+            [/\/\/.*$/, "comment"]
+          ]
+        }
+      });
+
+      editor = monaco.editor.create(document.getElementById("editor"), {
+        value: `struct ContentView: View {
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Hello SwiftUI")
+                .font(.largeTitle)
+
+            Button("Tap Me") {
+                print("Tapped")
+            }
+        }
+        .padding()
+    }
+}`,
+        language: "swift",
+        theme: "vs-dark",
+        automaticLayout: true,
+        fontSize: 15,
+        minimap: { enabled: false }
+      });
+    });
+
+    runButton.addEventListener("click", async () => {
+        console.log()
+      errorBox.style.display = "none";
+      errorBox.textContent = "";
+
+      //runButton.disabled = true;
+      runButton.textContent = "Running...";
+
+      try {
+        const response = await fetch("http://127.0.0.1:8080/api/preview", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            code: editor.getValue()
+          })
+        });
+
+        const data = await response.json();
+        console.log("data")
+        console.log(data.imageUrl)
+
+        if (!response.ok) {
+          errorBox.textContent = data.error || "Something went wrong.";
+          errorBox.style.display = "block";
+          return;
+        }
+
+        console.log(data);
+
+        if (!data.imageUrl) {
+          errorBox.textContent = "Server did not return image URL.";
+          errorBox.style.display = "block";
+          return;
+        }
+
+        previewImage.onload = () => {
+          console.log("Preview image loaded");
+        };
+
+        previewImage.onerror = () => {
+          errorBox.textContent = "Preview image failed to load.";
+          errorBox.style.display = "block";
+        };
+
+        placeholder.style.display = "none";
+        previewImage.style.display = "block";
+
+        previewImage.src = data.imageUrl + "?t=" + Date.now();
+
+      } catch (error) {
+        errorBox.textContent = error.message;
+        errorBox.style.display = "block";
+      } finally {
+        runButton.disabled = false;
+        runButton.textContent = "Run Preview";
+      }
+    });
+  </script>
+</body>
+</html>
