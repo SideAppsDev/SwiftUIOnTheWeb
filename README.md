@@ -1,12 +1,21 @@
+
 # SwiftUI On The Web
 
 A lightweight development server that allows users to write SwiftUI code in the browser and generate real iOS Simulator previews using Xcode and the iOS Simulator.
+
+Unlike mock renderers or syntax based previews, this project uses the real SwiftUI rendering engine through the iOS Simulator.
 
 The project works by taking SwiftUI code from a web client, injecting it into a small SwiftUI host app, building the app using `xcodebuild`, launching it in the iOS Simulator, capturing a screenshot, and returning the preview image back to the browser.
 
 ---
 
-# Features
+## Demo Video
+
+[![Watch the video](https://img.youtube.com/vi/zAtyGYQqXGk/maxresdefault.jpg)](https://www.youtube.com/watch?v=zAtyGYQqXGk)
+
+---
+
+## Features
 
 * Write SwiftUI code in the browser
 * Generate real SwiftUI previews
@@ -14,18 +23,18 @@ The project works by taking SwiftUI code from a web client, injecting it into a 
 * Incremental builds using DerivedData
 * Automatically installs and launches updated builds
 * Generates screenshot previews
-* Simple HTML client. 
+* Simple HTML client
 * Express.js backend
 * Supports automatic simulator boot on startup
 
 ---
 
-# How It Works
+## How It Works
 
 ```text
 Browser Client
     ↓
-POST /preview
+POST /api/preview
     ↓
 Server injects SwiftUI code into ContentView.swift
     ↓
@@ -38,11 +47,11 @@ Simulator app launches
 simctl captures screenshot
     ↓
 Image URL returned to client
-```
+````
 
 ---
 
-# Requirements
+## Requirements
 
 * macOS
 * Xcode installed
@@ -50,15 +59,9 @@ Image URL returned to client
 * Homebrew
 * xcodegen
 
-Install xcodegen:
-
-```bash
-brew install xcodegen
-```
-
 ---
 
-# Project Structure
+## Project Structure
 
 ```text
 SwiftUIOnTheWeb
@@ -75,7 +78,18 @@ SwiftUIOnTheWeb
 
 ---
 
-# Installing Dependencies
+## What Is PreviewHost?
+
+`PreviewHost` is a small native SwiftUI application used as the rendering engine for browser previews.
+
+The server dynamically writes incoming SwiftUI code into `ContentView.swift` inside the `PreviewHost` project. The app is then rebuilt using `xcodebuild`, installed into the iOS Simulator, launched, and captured as a screenshot using `simctl`.
+
+Because the project uses a real SwiftUI application running inside the actual iOS Simulator, the previews are rendered using the real SwiftUI rendering engine rather than a mock renderer or custom parser.
+
+The `PreviewHost` project is intentionally minimal and exists only to host dynamically generated SwiftUI views.
+
+
+## Installing Dependencies
 
 Inside the server folder:
 
@@ -85,7 +99,7 @@ npm install express cors
 
 ---
 
-# Running the Server
+## Running the Server
 
 ```bash
 node server.js
@@ -99,7 +113,7 @@ npx nodemon server.js
 
 ---
 
-# Booting the Simulator
+## Booting the Simulator
 
 The server automatically boots the simulator on startup.
 
@@ -111,7 +125,7 @@ iPhone 17 Pro Max
 
 ---
 
-# Starting the Client
+## Starting the Client
 
 Open:
 
@@ -119,35 +133,19 @@ Open:
 client/index.html
 ```
 
-You can use:
-
-* VSCode Live Server
-* Python HTTP server
-* Any static file server
-
-Example:
-
-```bash
-python3 -m http.server 5500
-```
-
-Then open:
-
-```text
-http://127.0.0.1:5500
-```
+You can use VSCode Live Server or any static file server.
 
 ---
 
-# API
+## API
 
-## POST /preview
+### POST /api/preview
 
 Request:
 
 ```json
 {
-  "code": "struct ContentView: View { var body: some View { Text(\"Hello\") } }"
+  "code": "import SwiftUI\n\nstruct ContentView: View { var body: some View { Text(\"Hello\") } }"
 }
 ```
 
@@ -155,16 +153,16 @@ Response:
 
 ```json
 {
-  "imageUrl": "http://127.0.0.1:3000/previews/preview-12345.png"
+  "imageUrl": "http://127.0.0.1:8080/previews/preview.png"
 }
 ```
 
 ---
 
-# Example SwiftUI Code
+## Example SwiftUI Code
 
 ```swift
-import SwiftUI 
+import SwiftUI
 
 struct ContentView: View {
 
@@ -185,7 +183,7 @@ struct ContentView: View {
 
 ---
 
-# Important Notes
+## Important Notes
 
 This project uses:
 
@@ -199,7 +197,7 @@ This will not run on Linux servers or normal VPS hosting providers.
 
 ---
 
-# Performance Notes
+## Performance Notes
 
 The simulator preview is not instant like Xcode previews.
 
@@ -224,7 +222,7 @@ depending on machine speed.
 
 ---
 
-# Future Improvements
+## Future Improvements
 
 * WebSocket live updates
 * Monaco Editor
@@ -238,6 +236,17 @@ depending on machine speed.
 
 ---
 
-# License
+## License
 
 MIT License
+
+---
+
+## Support My Work
+
+If this project helped you, consider supporting my work by checking out my book:
+
+**SwiftUI Architecture: Patterns and Practices for Building Scalable Applications**
+
+👉 [https://azamsharp.school/swiftui-architecture-book.html](https://azamsharp.school/swiftui-architecture-book.html)
+

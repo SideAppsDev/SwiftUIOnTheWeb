@@ -6,8 +6,6 @@ struct ContentView: View {
         VStack(spacing: 20) {
             Text("Hello SwiftUI")
                 .font(.largeTitle)
-                .background(.red)
-                .foregroundStyle(.green)
 
             Button("Tap Me") {
                 print("Tapped")

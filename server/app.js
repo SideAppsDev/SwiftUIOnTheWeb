@@ -8,13 +8,38 @@ const util = require('util')
 // CONSTANTS 
 const PORT = 8080 
 const SIMULATOR_NAME = 'iPhone 17 Pro Max';
-const PROJECT_PATH = '/Users/azamsharp/Desktop/SwiftOnBrowser/PreviewHost';
-const XCODE_PROJECT_PATH = `${PROJECT_PATH}/PreviewHost.xcodeproj`;
-const SCREENSHOT_DIR = path.join(__dirname, "screenshots");
-const CONTENT_VIEW_PATH = `${PROJECT_PATH}/PreviewHost/ContentView.swift`;
-const BUNDLE_ID = 'com.azamsharp.PreviewHost';
-const DERIVED_DATA_PATH = `${PROJECT_PATH}/DerivedData`;
-const BUILT_APP_PATH = `${DERIVED_DATA_PATH}/Build/Products/Debug-iphonesimulator/PreviewHost.app`;
+const PROJECT_PATH = path.join(__dirname, "../PreviewHost");
+
+const XCODE_PROJECT_PATH = path.join(
+  PROJECT_PATH,
+  "PreviewHost.xcodeproj"
+);
+
+const SCREENSHOT_DIR = path.join(
+  __dirname,
+  "screenshots"
+);
+
+const CONTENT_VIEW_PATH = path.join(
+  PROJECT_PATH,
+  "PreviewHost",
+  "ContentView.swift"
+);
+
+const DERIVED_DATA_PATH = path.join(
+  PROJECT_PATH,
+  "DerivedData"
+);
+
+const BUILT_APP_PATH = path.join(
+  DERIVED_DATA_PATH,
+  "Build",
+  "Products",
+  "Debug-iphonesimulator",
+  "PreviewHost.app"
+);
+
+const BUNDLE_ID = "com.azamsharp.PreviewHost";
 
 const execFileAsync = util.promisify(execFile);
 

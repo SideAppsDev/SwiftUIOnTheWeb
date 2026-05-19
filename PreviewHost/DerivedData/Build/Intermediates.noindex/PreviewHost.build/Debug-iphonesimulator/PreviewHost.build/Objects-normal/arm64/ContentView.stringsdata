@@ -15,7 +15,7 @@
         "key": "Tap Me",
         "location": {
           "startingColumn": 20,
-          "startingLine": 12
+          "startingLine": 10
         }
       }
     ]
