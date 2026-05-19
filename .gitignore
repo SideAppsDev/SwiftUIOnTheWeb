@@ -1,4 +1,6 @@
 .DS_Store
 /PreviewHost/DerivedData
-/node_modules
-/server/node_modules
+node_modules/
+DerivedData/
+screenshots/
+.DS_Store
