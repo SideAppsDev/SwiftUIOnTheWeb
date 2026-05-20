@@ -68,7 +68,7 @@ SwiftUIOnTheWeb
 ├── client
 │   └── index.html
 ├── server
-│   └── server.js
+│   └── app.js
 ├── PreviewHost
 │   ├── PreviewHost.xcodeproj
 │   └── PreviewHost
@@ -102,13 +102,19 @@ npm install express cors
 ## Running the Server
 
 ```bash
-node server.js
+npm start
+```
+
+Or directly:
+
+```bash
+node app.js
 ```
 
 Or using nodemon:
 
 ```bash
-npx nodemon server.js
+npx nodemon app.js
 ```
 
 ---
@@ -249,4 +255,3 @@ If this project helped you, consider supporting my work by checking out my book:
 **SwiftUI Architecture: Patterns and Practices for Building Scalable Applications**
 
 👉 [https://azamsharp.school/swiftui-architecture-book.html](https://azamsharp.school/swiftui-architecture-book.html)
-
